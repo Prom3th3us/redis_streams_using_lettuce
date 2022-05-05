@@ -2,6 +2,7 @@ import io.lettuce.core.cluster._
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 
+import java.util
 import scala.util.Try
 
 object Main extends App {
@@ -21,25 +22,28 @@ object Main extends App {
   val message = Try(sys.env("MESSAGE"))
     .getOrElse("hello from Miguel using Java and Lettuce and Redis Streams")
   def createMessageBody = {
-
-    val messageBody: Map[String, String] = Map(
-      "message" -> message,
-      "sensor_ts" -> String.valueOf(System.currentTimeMillis)
-    )
+    val messageBody: java.util.Map[String, String] =
+      new util.HashMap[String, String]
+    messageBody.put("message", message)
+    messageBody.put("sensor_ts", String.valueOf(System.currentTimeMillis))
     messageBody
   }
 
   //   Lines 12-14 call the syncCommands.xadd() method using the streams key “weather_sensor:wind” and the message body itself. This method returns the message ID.
-  def addToStream(messageBody: Map[String, String]) = {
+  def addToStream(messageBody: java.util.Map[String, String]) = {
 
-    val messageId = syncCommands.xadd("weather_sensor:wind", messageBody)
+    val messageId =
+      asyncCommands.xadd(
+        "weather_sensor:wind",
+        messageBody
+      )
     messageId
   }
 
   def printMessageIdAndContent = {
 
     System.out.println(
-      String.format("Message %s : %s posted", messageBody)
+      String.format("Message %s posted", messageBody)
     )
   }
 
@@ -54,7 +58,7 @@ object Main extends App {
   val redisClient = connectToRedis
 
   lazy val connection = redisClient.connect
-  lazy val syncCommands = connection.sync
+  lazy val asyncCommands = connection.async
 
   val messageBody = createMessageBody
   (1 to {

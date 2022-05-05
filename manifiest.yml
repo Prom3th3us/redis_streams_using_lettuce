@@ -1,22 +1,23 @@
+
 apiVersion: batch/v1
-kind: CronJob
+kind: Job
 metadata:
   name: redis-producer-using-java-one-million-messages
 spec:
-  schedule: "*/10 * * * *"
-  jobTemplate:
+  template:
+    # This is the pod template
     spec:
-      template:
-        spec:
-          containers:
-            - name: redis-producer-using-java-one-million-messages
-              image: miguelemos/lettuce_redis_stream_publisher:latest
-              imagePullPolicy: IfNotPresent
-              env:
-                - name: REDIS_HOST
-                  value: "redis-redis-cluster"
-                - name: MESSAGES_AMOUNT
-                  value: "100000000"
-                - name: MESSAGE
-                  value: "hola desde la meeting con Nacho y Miguel"
-          restartPolicy: OnFailure
+      containers:
+        - name: redis-producer-using-java-one-million-messages
+          image: miguelemos/lettuce_redis_stream_publisher:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REDIS_HOST
+              value: "redis-redis-cluster"
+            - name: MESSAGES_AMOUNT
+              value: "100000000"
+            - name: MESSAGE
+              value: "hola desde la meeting con Nacho y Miguel"
+      restartPolicy: OnFailure
+      # The pod template ends here
+
