@@ -3,7 +3,7 @@ import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 
 import java.util
-import scala.util.Try
+import scala.util.{Random, Try}
 
 object Main extends App {
 
@@ -34,7 +34,7 @@ object Main extends App {
 
     val messageId =
       asyncCommands.xadd(
-        "weather_sensor:wind",
+        "key" + Random.nextInt(),
         messageBody
       )
     messageId
