@@ -33,7 +33,7 @@ object Main extends App {
   def addToStream(messageBody: java.util.Map[String, String]) = {
 
     val messageId =
-      asyncCommands.xadd(
+      syncCommands.xadd(
         "key" + Random.nextInt(),
         messageBody
       )
@@ -57,7 +57,7 @@ object Main extends App {
   val redisClient = connectToRedis
 
   lazy val connection = redisClient.connect
-  lazy val asyncCommands = connection.async
+  lazy val syncCommands = connection.sync
 
   val messageBody = createMessageBody
   (1 to {
