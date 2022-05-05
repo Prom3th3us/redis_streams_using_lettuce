@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: redis-producer-using-java-one-million-messages
 spec:
-  schedule: "* * * * *"
+  schedule: "*/10 * * * *"
   jobTemplate:
     spec:
       template:
