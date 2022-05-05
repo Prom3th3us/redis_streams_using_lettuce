@@ -57,7 +57,7 @@ object Main extends App {
   lazy val syncCommands = connection.sync
 
   val messageBody = createMessageBody
-  (1 to $ {
+  (1 to {
     Try(sys.env("MESSAGES_AMOUNT").toInt).getOrElse(1000 * 1000)
   }) foreach (_ => addToStream(messageBody))
   printMessageIdAndContent
