@@ -41,7 +41,6 @@ object Main extends App {
   }
 
   def printMessageIdAndContent = {
-
     System.out.println(
       String.format("Message %s posted", messageBody)
     )
@@ -63,8 +62,11 @@ object Main extends App {
   val messageBody = createMessageBody
   (1 to {
     Try(sys.env("MESSAGES_AMOUNT").toInt).getOrElse(1000 * 1000)
-  }) foreach (_ => addToStream(messageBody))
-  printMessageIdAndContent
+  }) foreach { _ =>
+    printMessageIdAndContent
+    addToStream(messageBody)
+  }
+
   closeResources
 
 }
